@@ -17,4 +17,6 @@ def load_reviews_data(filename: str) -> None:
     reviewer = reviews_df['reviewer'].to_list()
     ratings = reviews_df['rating'].to_list()
 
+    test
+
     # print(movies)
