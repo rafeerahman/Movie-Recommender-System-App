@@ -108,21 +108,57 @@ class Graph:
             # We didn't find an existing vertex for both items.
             raise ValueError
 
+    def get_neighbours(self, item: Any) -> set:
+        """Return a set of the neighbours of the given item.
 
-def load_review_graph(df: pd.DataFrame) -> Graph:
-    """Return a movie review graph from the given data set.
+        Raise a ValueError if item does not appear as a vertex in this graph.
+        """
+        if item in self._vertices:
+            v = self._vertices[item]
+            return {neighbour.item for neighbour in v.neighbours}
+        else:
+            raise ValueError
+
+    def get_all_vertices(self, kind: str = '') -> set:
+        """Return a set of all vertex items in this graph.
+
+        If kind != '', only return the items of the given vertex kind.
+
+        Preconditions:
+            - kind in {'', 'reviewer', 'movie'}
+        """
+        if kind != '':
+            return {v.item for v in self._vertices.values() if v.kind == kind}
+        else:
+            return set(self._vertices.keys())
+
+
+def load_review_graph(df: pd.DataFrame, threshold: int = 0) -> Graph:
+    """Return a movie review graph from the given data set. Only includes reviewers with more
+    reviews than the given threshold. Default threshold is 0.
 
     Preconditions:
         - df is a dataframe returned by clean_dataframe
     """
     graph = Graph()
+    reviewers = {}
 
     for i in range(0, len(df['reviewer'])):
         reviewer = df['reviewer'][i]
         movie = df['movie'][i]
         rating = df['rating'][i]
-        graph.add_vertex(reviewer, 'reviewer')
-        graph.add_vertex(movie, 'movie')
-        graph.add_edge(reviewer, movie, rating)
+
+        if reviewer not in reviewers:
+            reviewers[reviewer] = [(movie, rating)]
+        else:
+            reviewers[reviewer].append((movie, rating))
+
+    for reviewer in reviewers:
+        if len(reviewers[reviewer]) > threshold:
+            graph.add_vertex(reviewer, 'reviewer')
+            for movie in reviewers[reviewer]:
+                rating = movie[1]
+                graph.add_vertex(movie[0], 'movie')
+                graph.add_edge(reviewer, movie[0], rating)
 
     return graph
