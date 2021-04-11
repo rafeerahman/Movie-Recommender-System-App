@@ -34,7 +34,7 @@ class Window:
             line_input = self.text.get(our_str, our_str + "lineend")
             list_so_far.append(line_input)
         # we should add other steps with using Graph class
-        # it should return a new window with name of all recommendation's movies
+        # it should returns a new window with names of all recommendation's movies
         # also uses limit too
 
         root.title("forth page")
