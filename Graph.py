@@ -54,7 +54,6 @@ class _Vertex:
             set_1 = set(self.neighbours)
             set_2 = set(other.neighbours)
             same_neighbours = set.intersection(set_1, set_2)
-            set_union = set.union(set_1, set_2)
             sim_score_so_far = 0
 
             for vertex in same_neighbours:
@@ -70,10 +69,6 @@ class _Vertex:
                 elif self.neighbours[vertex] <= 4 and other.neighbours[vertex] <= 4:
                     sim_score_so_far += 1
                 # 'great minds' bonus
-
-
-
-
                 if self.neighbours[vertex] != 10 and \
                         self.neighbours[vertex] == other.neighbours[vertex]:
                     sim_score_so_far += 2
@@ -175,7 +170,7 @@ def load_review_graph(df: pd.DataFrame, threshold: int = 0) -> Graph:
         if len(reviewers[reviewer]) > threshold:
             graph.add_vertex(reviewer, 'reviewer')
             for movie in reviewers[reviewer]:
-                rating = movie[1]
+                rating = int(movie[1])
                 graph.add_vertex(movie[0], 'movie')
                 graph.add_edge(reviewer, movie[0], rating)
 
