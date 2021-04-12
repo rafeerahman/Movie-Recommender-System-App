@@ -42,7 +42,7 @@ class _Vertex:
     def reviewer_similarity_score(self, other: _Vertex):
         """Return the similarity score between this vertex and other.
 
-        Similarity score is based on how many movies both reviewers rated 7 or higher.
+        Similarity score is based on how many movies each reviewer rated 7 or higher.
 
         Preconditions:
             - self.kind == 'reviewer'
@@ -55,12 +55,30 @@ class _Vertex:
             set_2 = set(other.neighbours)
             same_neighbours = set.intersection(set_1, set_2)
             set_union = set.union(set_1, set_2)
-            highly_rated_so_far = set()
+            sim_score_so_far = 0
 
             for vertex in same_neighbours:
-                if self.neighbours[vertex] >= 7 and other.neighbours[vertex] >= 7:
-                    highly_rated_so_far.add(vertex)
-            return len(highly_rated_so_far) / len(set_union)
+                # 'bothered reviewing' bonus:
+                sim_score_so_far += 1
+                # 'love' bonus
+                if self.neighbours[vertex] >= 9 and other.neighbours[vertex] >= 9:
+                    sim_score_so_far += 2
+                # 'like' bonus
+                elif self.neighbours[vertex] >= 7 and other.neighbours[vertex] >= 7:
+                    sim_score_so_far += 1
+                # 'dumpster dive' bonus
+                elif self.neighbours[vertex] <= 4 and other.neighbours[vertex] <= 4:
+                    sim_score_so_far += 1
+                # 'great minds' bonus
+
+
+
+
+                if self.neighbours[vertex] != 10 and \
+                        self.neighbours[vertex] == other.neighbours[vertex]:
+                    sim_score_so_far += 2
+
+            return sim_score_so_far / min(len(set_1), len(set_2))
 
 
 class Graph:
