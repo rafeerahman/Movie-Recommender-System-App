@@ -1,22 +1,24 @@
-"""
+"""CSC111 Winter 2021 Project: Cleaning the Data
+
+Instructions
+===============================
 This Python module contains several functions that perform computations on
-dataframes or create new dataframes for the given dataset.
+dataframes or create new dataframes for the given dataset. A CSV file is created
+from the filtered dataframe.
 """
 import json
 import pandas as pd
-import time
 
 
 def load_dataframe() -> pd.DataFrame:
     """ Return a dataframe for the 6 data files and print when you start or finish loading
-    a file and how much time it the loading takes.
+    a file.
     Preconditions:
         - The 6 JSON files are located in a folder called 'data'
     """
     data_dir = 'data'
     file_names = ["part-01.json", "part-02.json", "part-03.json",
                   "part-04.json", "part-05.json", "part-06.json"]
-    start_time = time.time()
     reviews_list = []
     for file in file_names:
         print(f"Started loading {file}...")
@@ -24,11 +26,8 @@ def load_dataframe() -> pd.DataFrame:
             new_file = json.load(json_file)
             for review in new_file:
                 reviews_list.append(review)
-        print(f"Finished loading {file} at {time.time() - start_time:.2f} total seconds elapsed")
-    total_time = time.time() - start_time
-    total_len = len(reviews_list)
-    print(
-        f"Loading complete after {total_time:.2f} seconds, "f"{total_len:,} items in reviews_list")
+        print(f"Finished loading {file}")
+    print("Loading complete")
     return pd.DataFrame(reviews_list)
 
 
@@ -59,7 +58,22 @@ def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df_not_na.reset_index(drop=True)
 
 
+def remove_shows(df: pd.DataFrame) -> pd.DataFrame:
+    """ Return a dataframe that has no tv show reviews. The year pattern decides if a
+    review is for a tv show.
+    Preconditions:
+    - df is a dataframe returned by clean_dataframe
+    """
+    year_re = r'(?:\()(\d{4})(?!\-)?(?:\d{4})?(?:\sTV\sMovie)?' \
+              r'(?:\sVideo)?(?:\s?\)$)(?!\sSeason\s\d+\,?\sEpisode\s\d+$)'
+    movie_df = df[df["movie"].str.extract(year_re)[0].notna()]
+    return movie_df.reset_index(drop=True)
 
 
-
+def create_csv(df: pd.DataFrame) -> None:
+    """ Create a csv file from the filtered dataframe
+    Preconditions:
+    - df is a dataframe created by calling the above functions
+    """
+    df.to_csv("data/imdb_reviews.csv", sep="\t", index=False)
 
