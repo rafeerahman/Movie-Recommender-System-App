@@ -10,6 +10,9 @@ import json
 import pandas as pd
 
 
+from Graph import load_review_graph
+
+
 def load_dataframe() -> pd.DataFrame:
     """ Return a dataframe for the 6 data files and print when you start or finish loading
     a file.
@@ -70,10 +73,21 @@ def remove_shows(df: pd.DataFrame) -> pd.DataFrame:
     return movie_df.reset_index(drop=True)
 
 
+def get_movie_titles() -> list[str]:
+    """ Return all the movie titles. """
+    df = load_sample('sample_reviews.json')  # CHANGE TO 'load_dataframe' when done
+    new_df = clean_dataframe(df)
+
+    #  Need to update threshold to user's choice.
+    g = load_review_graph(new_df, 5)
+    movies = list(g.get_all_vertices(kind='movie'))
+    # print(len(movies))
+    return movies
+
+
 def create_csv(df: pd.DataFrame) -> None:
     """ Create a csv file from the filtered dataframe
     Preconditions:
     - df is a dataframe created by calling the above functions
     """
     df.to_csv("data/imdb_reviews.csv", sep="\t", index=False)
-
