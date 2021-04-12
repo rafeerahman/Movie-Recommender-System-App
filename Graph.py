@@ -3,6 +3,8 @@
 from __future__ import annotations
 import pandas as pd
 from typing import Any, Union
+import csv
+import json
 
 
 class _Vertex:
@@ -42,7 +44,8 @@ class _Vertex:
     def reviewer_similarity_score(self, other: _Vertex):
         """Return the similarity score between this vertex and other.
 
-        Similarity score is based on how many movies each reviewer rated 7 or higher.
+        Similarity score is based on how many movies both reviewers rated, and if those scores are
+        similar.
 
         Preconditions:
             - self.kind == 'reviewer'
@@ -73,7 +76,7 @@ class _Vertex:
                         self.neighbours[vertex] == other.neighbours[vertex]:
                     sim_score_so_far += 2
 
-            return sim_score_so_far / min(len(set_1), len(set_2))
+            return sim_score_so_far / min(self.degree(), other.degree())
 
 
 class Graph:
@@ -145,8 +148,21 @@ class Graph:
         else:
             return set(self._vertices.keys())
 
+    def get_similarity_score(self, reviewer1: Any, reviewer2: Any) -> float:
+        """Return the similarity score between the two given reviewers in this graph.
 
-def load_review_graph(df: pd.DataFrame, threshold: int = 0) -> Graph:
+        Raise a ValueError if reviewer1 or reviewer2 do not appear as vertices in this graph.
+        """
+        vertices = self.get_all_vertices()
+        if reviewer1 not in vertices or reviewer2 not in vertices:
+            raise ValueError
+        else:
+            v1 = self._vertices[reviewer1]
+            v2 = self._vertices[reviewer2]
+            return v1.reviewer_similarity_score(v2)
+
+
+def load_review_graph_df(df: pd.DataFrame, threshold: int = 0) -> Graph:
     """Return a movie review graph from the given data set. Only includes reviewers with more
     reviews than the given threshold. Default threshold is 0.
 
@@ -165,6 +181,48 @@ def load_review_graph(df: pd.DataFrame, threshold: int = 0) -> Graph:
             reviewers[reviewer] = [(movie, rating)]
         else:
             reviewers[reviewer].append((movie, rating))
+
+    for reviewer in reviewers:
+        if len(reviewers[reviewer]) > threshold:
+            graph.add_vertex(reviewer, 'reviewer')
+            for movie in reviewers[reviewer]:
+                rating = int(movie[1])
+                graph.add_vertex(movie[0], 'movie')
+                graph.add_edge(reviewer, movie[0], rating)
+
+    return graph
+
+
+def create_json(df: pd.DataFrame) -> None:
+    """ Create a csv file from the filtered dataframe
+    Preconditions:
+    - df is a dataframe created by calling the above functions
+    """
+    df.to_json("data/imdb_reviews.json", orient='split', index=False)
+
+
+def load_review_graph_json(reviews_file: str, threshold: int = 0):
+    """Return a movie review graph from the given data set. Only includes reviewers with more
+    reviews than the given threshold. Default threshold is 0.
+
+        Preconditions:
+            - reviews_file is a JSON file returned by create_json
+    """
+    graph = Graph()
+    reviewers = {}
+
+    with open(reviews_file) as json_file:
+        data = json.load(json_file)
+
+        for review in data['data']:
+            reviewer = review[0]
+            movie = review[1]
+            rating = int(review[2])
+
+            if reviewer not in reviewers:
+                reviewers[reviewer] = [(movie, rating)]
+            else:
+                reviewers[reviewer].append((movie, rating))
 
     for reviewer in reviewers:
         if len(reviewers[reviewer]) > threshold:
