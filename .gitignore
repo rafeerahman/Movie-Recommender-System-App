@@ -3,8 +3,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,pycharm,windows,linux,python
 
 ### datasets ###
-data
-data/*
+data/part*
+data/sample.json
 
 
 ### Linux ###
