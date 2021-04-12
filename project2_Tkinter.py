@@ -140,6 +140,7 @@ def new_window1() -> Any:
             root.after(2000, remove_lbl)
         else:
             var.set('Not added')
+            root.after(2000, remove_lbl)
 
         # print(movies_to_suggest)
 
@@ -203,5 +204,7 @@ def new_window1() -> Any:
     root.title("Select movies")
 
     root.mainloop()
+
+    # return movies_to_suggest
     # return window
 
