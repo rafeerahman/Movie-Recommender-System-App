@@ -7,6 +7,8 @@ from cleaning_data import get_movie_titles
 
 window_height = 375
 window_width = 900
+
+# Need to add a threshold input
 movie_titles = get_movie_titles()
 
 
@@ -134,8 +136,16 @@ def new_window1() -> Any:
 
         if typed not in movies_to_suggest and typed != '':
             movies_to_suggest.append(typed)
+            var.set('Success')
+            root.after(2000, remove_lbl)
+        else:
+            var.set('Not added')
 
-        print(movies_to_suggest)
+        # print(movies_to_suggest)
+
+    def remove_lbl() -> None:
+        """ Removes 'success' or 'unsuccessful' after 2 seconds"""
+        var.set('')
 
     movies_to_suggest = []
 
@@ -177,6 +187,11 @@ def new_window1() -> Any:
     btn_add.pack()
     btn_add.bind("<Button-1>", add)
 
+    var = StringVar()
+    var.set('')
+    lbl = Label(root, textvariable=var, bg='#5841A6', fg='white')
+    lbl.pack()
+
     # top_frame = Frame(root, bd=5, bg="red")
     # top_frame.pack(side=TOP)
     #
@@ -188,6 +203,5 @@ def new_window1() -> Any:
     root.title("Select movies")
 
     root.mainloop()
-    print(movies_to_suggest)
     # return window
 

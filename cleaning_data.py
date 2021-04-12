@@ -6,6 +6,8 @@ import json
 import pandas as pd
 import time
 
+from Graph import load_review_graph
+
 
 def load_dataframe() -> pd.DataFrame:
     """ Return a dataframe for the 6 data files and print when you start or finish loading
@@ -61,9 +63,14 @@ def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 def get_movie_titles() -> list[str]:
     """ Return all the movie titles. """
-    df = load_sample('sample_reviews.json') # CHANGE TO 'load_dataframe' when done
+    df = load_sample('sample_reviews.json')  # CHANGE TO 'load_dataframe' when done
     new_df = clean_dataframe(df)
-    return new_df['movie'].to_list()
+
+    #  Need to update threshold to user's choice.
+    g = load_review_graph(new_df, 5)
+    movies = list(g.get_all_vertices(kind='movie'))
+    # print(len(movies))
+    return movies
 
 
 
