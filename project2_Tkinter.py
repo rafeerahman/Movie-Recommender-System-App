@@ -2,6 +2,12 @@
 from tkinter import *
 from typing import Any
 import tkinter as tk
+from tkinter.font import Font
+from cleaning_data import get_movie_titles
+
+window_height = 375
+window_width = 900
+movie_titles = get_movie_titles()
 
 
 class Window:
@@ -20,6 +26,7 @@ class Window:
 
     def get(self):
         root = Tk()
+        root['background'] = '#5841A6'
         root.geometry("1000x100")
         frame = Frame(root, bd=5, bg="black")
         frame.pack()
@@ -48,48 +55,139 @@ def first_page() -> Any:
     return ...
     """
     root = Tk()
-    root.geometry("1000x100")
-    frame = Frame(root, bd=5, bg="black")
-    frame.pack()
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    new_font = Font(family='Segoe UI', size=16)
+    root['background'] = '#5841A6'
+    root.geometry("{}x{}+{}+{}".format(window_height, window_width, screen_width//2 - 200,
+                                       screen_height//2 - 400))
+    # root.geometry("375x812")
+    # frame = Frame(root, bd=5, bg="#5841A6")
+    # frame.pack()
 
     var = StringVar()
-    var.set("welcome to our recommendation ...")
+    var.set("Movie Recommender")
 
-    top_frame = Frame(root, bd=5, bg="red")
-    top_frame.pack(side=TOP)
+    # top_frame = Frame(root, bd=5, bg="#5841A6")
+    # top_frame.pack(side=TOP)
 
-    label = Label(frame, textvariable=var)
+    label = Label(root, bg='#5841A6', textvariable=var, font=new_font, fg='white')
     label.pack()
+    label.place(x=89, y=159)
 
-    button1 = Button(top_frame, text="start", command=new_window1)
-    button1.pack(padx=3, pady=3)
+    image1 = tk.PhotoImage(file='images/Group 1.png')
+    button1 = Button(root, image=image1, bg='#5841A6', text="START",
+                     command=lambda: [f() for f in [root.destroy, new_window1]],
+                     borderwidth=0)
+    button1.pack()
+    button1.place(x=69, y=255)
 
-    root.title("first page")
+    image2 = tk.PhotoImage(file='images/Group 2.png')
+    button2 = Button(root, image=image2, bg='#5841A6', text="START",
+                     command=lambda: [new_window1(), root.destroy()],
+                     borderwidth=0)
+    button2.pack()
+    button2.place(x=69, y=406)
+
+    root.title("Start")
     root.mainloop()
-    return frame
+    # return frame
 
 
 def new_window1() -> Any:
     """..."""
+    def fill(event) -> None:
+        """ Update entry when listbox is clicked """
+        # Delete from entry box
+        entry.delete(0, END)
+
+        entry.insert(0, my_list.get(ACTIVE))
+
+    def update(data: list[str]) -> None:
+        """ Updating the listbox for suggestions """
+        # Clear the box at the beginning
+        my_list.delete(0, END)
+
+        for item in data:
+            my_list.insert(END, item)
+
+    def suggest(event) -> None:
+        """ Suggest/Check if entry is a movie title """
+        # Get what was typed by user
+        typed = entry.get()
+
+        if typed == '':
+            data = movie_titles
+        else:
+            data = []
+            for item in movie_titles:
+                if typed.lower() in item.lower():
+                    data.append(item)
+
+        # Updates listbox
+        update(data)
+
+    def add(event) -> None:
+        """ Add all items to a list"""
+        typed = entry.get()
+
+        if typed not in movies_to_suggest and typed != '':
+            movies_to_suggest.append(typed)
+
+        print(movies_to_suggest)
+
+    movies_to_suggest = []
+
     root = Tk()
-    root.geometry("1000x1000")
-    frame = Frame(root, bd=5, bg="black")
-    frame.pack()
+    root['background'] = '#5841A6'
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    root.geometry("{}x{}+{}+{}".format(window_height, window_width, screen_width // 2 - 200,
+                                       screen_height // 2 - 400))
 
-    new_label = Label(frame, text="enter name of your favorite movies \n"
-                                  " note:in last line enter your limite")
-    new_label.pack()
+    # frame = Frame(root, bd=5, bg="black")
+    # frame.pack()
 
-    top_frame = Frame(root, bd=5, bg="red")
-    top_frame.pack(side=TOP)
+    new_font = Font(family='Segoe UI', size=14)
+    # new_label = Label(frame, text="enter name of your favorite movies \n"
+    #                               " note:in last line enter your limit ")
+    new_label = Label(root,
+                      bg='#5841A6', fg='white',
+                      text="Enter the title of your favourite movies", font=new_font)
+    new_label.pack(pady=20)
 
-    window = Window(root)
+    entry = Entry(root, width=30, font=new_font)
+    entry.pack(pady=10)
 
-    my_button = Button(root, text="Enter", command=window.get)
-    my_button.pack(pady=5)
+    my_list = Listbox(root, width=50)
+    my_list.pack(pady=30)
 
-    root.title("third page")
+    # add movies to the list box
+    update(movie_titles)
+
+    # bind when clicking movie title, calls the fill function to add to entry()
+    my_list.bind("<<ListboxSelect>>", fill)
+
+    # binding on entry box with the suggest function
+    entry.bind("<KeyRelease>", suggest)
+
+    btn_add = Button(root, bg='#5841A6', text="Add to list",
+                     borderwidth=10)
+    btn_add.pack()
+    btn_add.bind("<Button-1>", add)
+
+    # top_frame = Frame(root, bd=5, bg="red")
+    # top_frame.pack(side=TOP)
+    #
+    # window = Window(root)
+    #
+    # my_button = Button(root, text="Enter", command=window.get)
+    # my_button.pack(pady=5)
+
+    root.title("Select movies")
 
     root.mainloop()
-    return window
+    print(movies_to_suggest)
+    # return window
 

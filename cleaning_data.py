@@ -59,6 +59,12 @@ def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df_not_na.reset_index(drop=True)
 
 
+def get_movie_titles() -> list[str]:
+    """ Return all the movie titles. """
+    df = load_sample('sample_reviews.json') # CHANGE TO 'load_dataframe' when done
+    new_df = clean_dataframe(df)
+    return new_df['movie'].to_list()
+
 
 
 
