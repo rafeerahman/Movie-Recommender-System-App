@@ -214,6 +214,7 @@ def new_window1() -> Any:
     # return movies_to_suggest
     # return window
 
+
 def page_three() -> None:
     root = Tk()
     screen_width = root.winfo_screenwidth()
@@ -236,8 +237,8 @@ def page_three() -> None:
 
     mylist = Listbox(root, width=window_width-50, height=window_height-50,
                      yscrollcommand=myscroll.set)
-    for i in range(1, len(recommend_movie)):
-        mylist.insert(END,"movie " + str(recommend_movie[i]))
+    for i in range(0, len(recommend_movie)):
+        mylist.insert(END, "movie " + str(recommend_movie[i]))
     mylist.pack(side=LEFT, fill=BOTH, expand=True)
 
     myscroll.config(command=mylist.yview)
@@ -266,6 +267,6 @@ def page_three() -> None:
     # for items in movies_to_suggest:
     #     graph.add_edge("user", items, 10)
     # recommend_movie = Graph.get_suggestions("user", graph)
-    root.title("the End...")
+    root.title("Here are you suggestions:")
     root.mainloop()
     # return frame
