@@ -242,7 +242,7 @@ def page_three() -> None:
 
     mylist = Listbox(root, width=window_width-50, height=window_height-50, yscrollcommand=myscroll.set)
     for i in range(1, len(recommend_movie)):
-        mylist.insert(END, "Number " + str(recommend_movie[i]))
+        mylist.insert(END, str(recommend_movie[i]))
     mylist.pack(side=LEFT, fill=BOTH, expand=True)
 
     myscroll.config(command=mylist.yview)
