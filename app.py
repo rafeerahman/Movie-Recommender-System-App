@@ -219,5 +219,5 @@ def page_three() -> None:
     # for items in movies_to_suggest:
     #     graph.add_edge("user", items, 10)
     # recommend_movie = Graph.get_suggestions("user", graph)
-    root.title("Here are your suggestions")
+    root.title("Here are your suggestions:")
     root.mainloop()
