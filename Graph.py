@@ -5,7 +5,7 @@ import pandas as pd
 from typing import Any, Union
 import csv
 import json
-
+import random
 
 class _Vertex:
     """A vertex in a movie review graph, used to represent a reviewer or a movie.
@@ -92,6 +92,39 @@ class Graph:
         """Initialize an empty graph, with no vertices or edges."""
         self._vertices = {}
 
+    def add_reviewer(self, movies: list[str]) -> None:
+        """Add a reviewer vertex to this graph with every movie in movies reviewed with a
+        10 rating. Each edge to a movie is one-way.
+
+        Preconditions:
+            - all([movie in graph.get_all_vertices() for movie in movies])"""
+
+        reviewer = _Vertex('CSC111_Reviewer', 'reviewer')
+
+        for movie in movies:
+            m_vertex = self._vertices[movie]
+            reviewer.neighbours[m_vertex] = 10
+
+        self._vertices['CSC111_Reviewer'] = reviewer
+
+    def suggest_movies(self, reviewer: Any, other: Any) -> List[Any]:
+        """Suggests movies for reviewer based on movies that the other reviewer has rated highly.
+        Returns an empty list if there are no good suggestions available.
+
+        Preconditions:
+            - reviewer in graph.get_all_vertices()
+            - other in graph.get_all_vertices()
+        """
+        potential_recs = self.get_neighbours(other)
+        suggestions_so_far = []
+        neighbours = self.get_neighbours(reviewer)
+
+        for p_rec in potential_recs:
+            if p_rec not in neighbours and self.get_weight(other, p_rec) >= 9:
+                suggestions_so_far.append(p_rec)
+
+        return suggestions_so_far
+
     def add_vertex(self, item: Any, kind: str) -> None:
         """Add a vertex with the given item and kind to this graph.
 
@@ -134,6 +167,18 @@ class Graph:
             return {neighbour.item for neighbour in v.neighbours}
         else:
             raise ValueError
+
+    def get_weight(self, item1: Any, item2: Any) -> Union[int, float]:
+        """Return the weight of the edge between the given items.
+
+        Return 0 if item1 and item2 are not adjacent.
+
+        Preconditions:
+            - item1 and item2 are vertices in this graph
+        """
+        v1 = self._vertices[item1]
+        v2 = self._vertices[item2]
+        return v1.neighbours.get(v2, 0)
 
     def get_all_vertices(self, kind: str = '') -> set:
         """Return a set of all vertex items in this graph.
@@ -195,18 +240,19 @@ def load_review_graph_df(df: pd.DataFrame, threshold: int = 0) -> Graph:
 
 def create_json(df: pd.DataFrame) -> None:
     """ Create a csv file from the filtered dataframe
+
     Preconditions:
-    - df is a dataframe created by calling the above functions
+        - df is a dataframe created by calling the above functions
     """
     df.to_json("data/imdb_reviews.json", orient='split', index=False)
 
 
-def load_review_graph_json(reviews_file: str, threshold: int = 0):
+def load_review_graph_json(reviews_file: str, threshold: int = 0) -> Graph:
     """Return a movie review graph from the given data set. Only includes reviewers with more
     reviews than the given threshold. Default threshold is 0.
 
-        Preconditions:
-            - reviews_file is a JSON file returned by create_json
+    Preconditions:
+        - reviews_file is a JSON file returned by create_json
     """
     graph = Graph()
     reviewers = {}
@@ -233,3 +279,52 @@ def load_review_graph_json(reviews_file: str, threshold: int = 0):
                 graph.add_edge(reviewer, movie[0], rating)
 
     return graph
+
+
+def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[Any]:
+    """Return a list of movie suggestions based on the similarity score of the given reviewer
+     in relation to the rest of the reviewers in the given graph. The list is at
+     most as long as the given threshold.
+
+    Preconditions:
+        - threshold >= 1
+        - reviewer in graph.get_all_vertices()
+    """
+    reviewers_so_far = set()
+
+    for movie in graph.get_neighbours(reviewer):
+        for user in graph.get_neighbours(movie):
+            reviewers_so_far.add(user)
+
+    sim_scores = {}
+
+    for user in reviewers_so_far:
+        sim_score = graph.get_similarity_score(user, reviewer)
+
+        if sim_score > 0:
+            if sim_score not in sim_scores:
+                sim_scores[sim_score] = [user]
+            else:
+                sim_scores[sim_score].append(user)
+
+    print(sim_scores)
+    recommendations_so_far = set()
+
+    while len(recommendations_so_far) < threshold:
+        similar_reviewers = sim_scores[max(sim_scores)]
+
+        if similar_reviewers != []:
+            sim_user = similar_reviewers.pop(random.randint(0, len(similar_reviewers) - 1))
+            rec_movies = graph.suggest_movies(reviewer, sim_user)
+            for movie in rec_movies:
+                recommendations_so_far.add(movie)
+
+        else:
+            sim_scores.pop(max(sim_scores))
+
+    recommendations = list(recommendations_so_far)
+
+    while len(recommendations) > threshold:
+        recommendations.pop()
+
+    return recommendations

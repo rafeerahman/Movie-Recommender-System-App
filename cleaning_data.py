@@ -10,7 +10,7 @@ import json
 import pandas as pd
 
 
-from Graph import load_review_graph
+from Graph import load_review_graph_df
 
 
 def load_dataframe() -> pd.DataFrame:
@@ -79,7 +79,7 @@ def get_movie_titles() -> list[str]:
     new_df = clean_dataframe(df)
 
     #  Need to update threshold to user's choice.
-    g = load_review_graph(new_df, 5)
+    g = load_review_graph_df(new_df, 5)
     movies = list(g.get_all_vertices(kind='movie'))
     # print(len(movies))
     return movies
