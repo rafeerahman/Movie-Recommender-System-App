@@ -54,7 +54,6 @@ def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df[['reviewer', 'movie', 'rating']]
     df_not_na = df[df["rating"].notna()]
-    df_not_na["rating"] = df_not_na["rating"].astype(int)
     return df_not_na.reset_index(drop=True)
 
 
@@ -70,12 +69,29 @@ def remove_shows(df: pd.DataFrame) -> pd.DataFrame:
     return movie_df.reset_index(drop=True)
 
 
+def get_movie_titles() -> list[str]:
+    """ Return all the movie titles. """
+    df = load_sample('sample_reviews.json')  # CHANGE TO 'load_dataframe' when done
+    new_df = clean_dataframe(df)
+
+    #  Need to update threshold to user's choice.
+    g = load_review_graph(new_df, 5)
+    movies = list(g.get_all_vertices(kind='movie'))
+    # print(len(movies))
+    return movies
+
+
+def create_csv(df: pd.DataFrame) -> None:
+    """ Create a csv file from the filtered dataframe
+    Preconditions:
+    - df is a dataframe created by calling the above functions
+    """
+    df.to_csv("data/imdb_reviews.csv", sep="\t", index=False)
+
+
 def create_json(df: pd.DataFrame) -> None:
-    """ Create a json file from the filtered dataframe
+    """ Create a csv file from the filtered dataframe
     Preconditions:
     - df is a dataframe created by calling the above functions
     """
     df.to_json("data/imdb_reviews.json", orient='split', index=False)
-
-
-
