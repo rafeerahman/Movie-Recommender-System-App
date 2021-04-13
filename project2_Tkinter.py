@@ -3,17 +3,17 @@ from tkinter import *
 from typing import Any
 import tkinter as tk
 from tkinter.font import Font
-from cleaning_data import get_movie_titles
 from tkinter import messagebox
 import Graph
-import cleaning_data
+
 
 window_height = 375
 window_width = 900
 
-# Need to add a threshold input
-movie_titles = get_movie_titles()
+graph = Graph.load_review_graph_json('data/imdb_reviews.json')
+movie_titles = graph.get_all_vertices('movie')
 movies_to_suggest = []
+
 
 class Window:
 
@@ -226,21 +226,16 @@ def page_three() -> None:
     # root.geometry("375x812")
     # frame = Frame(root, bd=5, bg="#5841A6")
     # frame.pack()
-    df = cleaning_data.load_sample('sample_reviews.json')  # CHANGE TO 'load_dataframe' when done
-    new_df = cleaning_data.clean_dataframe(df)
 
-    #  Need to update threshold to user's choice.
-    graph = Graph.load_review_graph_df(new_df, 5)
     # need to be change
-    graph.add_vertex("user", "reviewer")
-    for items in movies_to_suggest:
-        graph.add_edge("user", items, 10)
-    recommend_movie = Graph.get_suggestions("user", graph)
+    graph.add_reviewer(movies_to_suggest)
+    recommend_movie = Graph.get_suggestions('CSC111_Reviewer', graph)
 
     myscroll = Scrollbar(root)
     myscroll.pack(side=RIGHT, fill=Y, )
 
-    mylist = Listbox(root, width=window_width-50, height=window_height-50, yscrollcommand=myscroll.set)
+    mylist = Listbox(root, width=window_width-50, height=window_height-50,
+                     yscrollcommand=myscroll.set)
     for i in range(1, len(recommend_movie)):
         mylist.insert(END,"movie " + str(recommend_movie[i]))
     mylist.pack(side=LEFT, fill=BOTH, expand=True)
@@ -250,7 +245,8 @@ def page_three() -> None:
     # top_frame = Frame(root, bd=5, bg="#5841A6")
     # top_frame.pack(side=TOP)
 
-    label = Label(root, bg='#5841A6', textvariable="movie you might like...", font=new_font, fg='white')
+    label = Label(root, bg='#5841A6', textvariable="movie you might like...", font=new_font,
+                  fg='white')
     label.pack()
     label.place(x=89, y=159)
 
