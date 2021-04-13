@@ -233,15 +233,6 @@ def load_review_graph_df(df: pd.DataFrame, threshold: int = 0) -> Graph:
     return graph
 
 
-def create_json(df: pd.DataFrame) -> None:
-    """ Create a csv file from the filtered dataframe
-
-    Preconditions:
-        - df is a dataframe created by calling the above functions
-    """
-    df.to_json("data/imdb_reviews.json", orient='split', index=False)
-
-
 def load_review_graph_json(reviews_file: str, threshold: int = 0) -> Graph:
     """Return a movie review graph from the given data set. Only includes reviewers with more
     reviews than the given threshold. Default threshold is 0.
@@ -322,17 +313,8 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
     while len(recommendations) > threshold:
         recommendations.pop()
 
-    return recommendations
+    if len(recommendations) == 0:
+        return [' recommendations not found. Try adding more movies!']
 
-
-def get_movie_titles() -> list[str]:
-    """ Return all the movie titles. """
-    df = cd.load_sample('sample.json')  # CHANGE TO 'load_dataframe' when done
-    clean = cd.clean_dataframe(df)
-    no_tv = cd.remove_shows(clean)
-
-    #  Need to update threshold to user's choice.
-    g = load_review_graph_df(no_tv, 5)
-    movies = list(g.get_all_vertices(kind='movie'))
-    # print(len(movies))
-    return movies
+    else:
+        return recommendations
