@@ -124,7 +124,8 @@ def new_window1() -> None:
     entry = Entry(root, width=17, font=new_font)
     entry.place(x=61, y=204)
 
-    my_list = Listbox(root, width=45)
+    list_font = Font(family='Segoe UI', size=8)
+    my_list = Listbox(root, font=list_font, width=45)
     my_list.place(x=61, y=263)
 
     # Add movies to the list box
@@ -172,8 +173,8 @@ def page_three() -> None:
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
-    new_font = Font(family='Segoe UI', size=16)
-    root['background'] = '#5841A6'
+    new_font = Font(family='Montserrat', size=16)
+    root['background'] = '#121212'
     root.geometry("{}x{}+{}+{}".format(window_width, window_height, screen_width // 2 - 200,
                                        screen_height // 2 - 400))
     # root.geometry("375x812")
@@ -187,10 +188,12 @@ def page_three() -> None:
     myscroll = Scrollbar(root)
     myscroll.pack(side=RIGHT, fill=Y, )
 
-    mylist = Listbox(root, width=window_height-50, height=window_width-50,
+    list_font = Font(family='Montserrat', size=12)
+    mylist = Listbox(root, font=list_font, fg='white', bg='#121212', width=window_height-50,
+                     height=window_width-50,
                      yscrollcommand=myscroll.set)
     for i in range(1, len(recommend_movie)):
-        mylist.insert(END,"movie " + str(recommend_movie[i]))
+        mylist.insert(END, "Movie " + str(recommend_movie[i]))
     mylist.pack(side=LEFT, fill=BOTH, expand=True)
 
     myscroll.config(command=mylist.yview)
@@ -198,7 +201,7 @@ def page_three() -> None:
     # top_frame = Frame(root, bd=5, bg="#5841A6")
     # top_frame.pack(side=TOP)
 
-    label = Label(root, bg='#5841A6', textvariable="movie you might like...", font=new_font,
+    label = Label(root, bg='#121212', textvariable="movie you might like...", font=new_font,
                   fg='white')
     label.pack()
     label.place(x=89, y=159)
