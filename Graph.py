@@ -328,12 +328,12 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
 
 def get_movie_titles() -> list[str]:
     """ Return all the movie titles. """
-    df = cd.load_sample('sample.json')  # CHANGE TO 'load_dataframe' when done
-    clean = cd.clean_dataframe(df)
-    no_tv = cd.remove_shows(clean)
+    # df = cd.load_sample('sample.json')  # CHANGE TO 'load_dataframe' when done
+    # clean = cd.clean_dataframe(df)
+    # no_tv = cd.remove_shows(clean)
 
     #  Need to update threshold to user's choice.
-    g = load_review_graph_df(no_tv, 5)
+    g = load_review_graph_json("data/imdb_reviews.json", 5)
     movies = list(g.get_all_vertices(kind='movie'))
     # print(len(movies))
     return movies
