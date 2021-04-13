@@ -4,13 +4,16 @@ from typing import Any
 import tkinter as tk
 from tkinter.font import Font
 from cleaning_data import get_movie_titles
+from tkinter import messagebox
+import Graph
+import cleaning_data
 
 window_height = 375
 window_width = 900
 
 # Need to add a threshold input
 movie_titles = get_movie_titles()
-
+movies_to_suggest = []
 
 class Window:
 
@@ -62,8 +65,8 @@ def first_page() -> Any:
 
     new_font = Font(family='Segoe UI', size=16)
     root['background'] = '#5841A6'
-    root.geometry("{}x{}+{}+{}".format(window_height, window_width, screen_width//2 - 200,
-                                       screen_height//2 - 400))
+    root.geometry("{}x{}+{}+{}".format(window_height, window_width, screen_width // 2 - 200,
+                                       screen_height // 2 - 400))
     # root.geometry("375x812")
     # frame = Frame(root, bd=5, bg="#5841A6")
     # frame.pack()
@@ -85,13 +88,6 @@ def first_page() -> Any:
     button1.pack()
     button1.place(x=69, y=255)
 
-    image2 = tk.PhotoImage(file='images/Group 2.png')
-    button2 = Button(root, image=image2, bg='#5841A6', text="START",
-                     command=lambda: [new_window1(), root.destroy()],
-                     borderwidth=0)
-    button2.pack()
-    button2.place(x=69, y=406)
-
     root.title("Start")
     root.mainloop()
     # return frame
@@ -99,6 +95,7 @@ def first_page() -> Any:
 
 def new_window1() -> Any:
     """..."""
+
     def fill(event) -> None:
         """ Update entry when listbox is clicked """
         # Delete from entry box
@@ -133,7 +130,9 @@ def new_window1() -> Any:
     def add(event) -> None:
         """ Add all items to a list"""
         typed = entry.get()
-
+        if typed not in movie_titles:
+            var.set('it is not in our dataset, sorry!')
+            root.after(2000, remove_lbl)
         if typed not in movies_to_suggest and typed != '':
             movies_to_suggest.append(typed)
             var.set('Success')
@@ -148,7 +147,7 @@ def new_window1() -> Any:
         """ Removes 'success' or 'unsuccessful' after 2 seconds"""
         var.set('')
 
-    movies_to_suggest = []
+    # movies_to_suggest = []
 
     root = Tk()
     root['background'] = '#5841A6'
@@ -193,6 +192,13 @@ def new_window1() -> Any:
     lbl = Label(root, textvariable=var, bg='#5841A6', fg='white')
     lbl.pack()
 
+    image2 = tk.PhotoImage(file='images/Group 2.png')
+    button2 = Button(root, image=image2, bg='#5841A6', text="START",
+                     command=lambda: [root.destroy(), page_three()],
+                     borderwidth=0)
+    button2.pack()
+    button2.place(x=69, y=406)
+
     # top_frame = Frame(root, bd=5, bg="red")
     # top_frame.pack(side=TOP)
     #
@@ -208,3 +214,62 @@ def new_window1() -> Any:
     # return movies_to_suggest
     # return window
 
+def page_three() -> None:
+    root = Tk()
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    new_font = Font(family='Segoe UI', size=16)
+    root['background'] = '#5841A6'
+    root.geometry("{}x{}+{}+{}".format(window_height, window_width, screen_width // 2 - 200,
+                                       screen_height // 2 - 400))
+    # root.geometry("375x812")
+    # frame = Frame(root, bd=5, bg="#5841A6")
+    # frame.pack()
+    df = cleaning_data.load_sample('sample_reviews.json')  # CHANGE TO 'load_dataframe' when done
+    new_df = cleaning_data.clean_dataframe(df)
+
+    #  Need to update threshold to user's choice.
+    graph = Graph.load_review_graph_df(new_df, 5)
+    # need to be change
+    graph.add_vertex("user", "reviewer")
+    for items in movies_to_suggest:
+        graph.add_edge("user", items, 10)
+    recommend_movie = Graph.get_suggestions("user", graph)
+
+    myscroll = Scrollbar(root)
+    myscroll.pack(side=RIGHT, fill=Y, )
+
+    mylist = Listbox(root, width=window_width-50, height=window_height-50, yscrollcommand=myscroll.set)
+    for i in range(1, len(recommend_movie)):
+        mylist.insert(END, "Number " + str(recommend_movie[i]))
+    mylist.pack(side=LEFT, fill=BOTH, expand=True)
+
+    myscroll.config(command=mylist.yview)
+
+    # top_frame = Frame(root, bd=5, bg="#5841A6")
+    # top_frame.pack(side=TOP)
+
+    label = Label(root, bg='#5841A6', textvariable="movie you might like...", font=new_font, fg='white')
+    label.pack()
+    label.place(x=89, y=159)
+
+    # image1 = tk.PhotoImage(file='images/Group 1.png')
+    # button1 = Button(root, image=image1, bg='#5841A6', text="START",
+    #                  command=lambda: [f() for f in [root.destroy, new_window1]],
+    #                  borderwidth=0)
+    # button1.pack()
+    # button1.place(x=69, y=255)
+    # df = cleaning_data.load_sample('sample_reviews.json')  # CHANGE TO 'load_dataframe' when done
+    # new_df = cleaning_data.clean_dataframe(df)
+    #
+    # #  Need to update threshold to user's choice.
+    # graph = Graph.load_review_graph_df(new_df, 5)
+    # # need to be change
+    # graph.add_vertex("user", "reviewer")
+    # for items in movies_to_suggest:
+    #     graph.add_edge("user", items, 10)
+    # recommend_movie = Graph.get_suggestions("user", graph)
+    root.title("the End...")
+    root.mainloop()
+    # return frame
