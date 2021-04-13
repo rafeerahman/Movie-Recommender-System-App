@@ -3,6 +3,7 @@
 from __future__ import annotations
 import pandas as pd
 from typing import Any, Union
+import csv
 import json
 import random
 import cleaning_data as cd
@@ -323,3 +324,4 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
         recommendations.pop()
 
     return recommendations
+
