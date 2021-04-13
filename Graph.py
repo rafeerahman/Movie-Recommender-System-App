@@ -54,9 +54,10 @@ class _Vertex:
         if self.degree == 0 or other.degree == 0:
             return 0.0
         else:
-            set_1 = set(self.neighbours)
-            set_2 = set(other.neighbours)
-            same_neighbours = set.intersection(set_1, set_2)
+            neighbours = self.neighbours
+            other_neighbours = other.neighbours
+            same_neighbours = neighbours.keys() & other_neighbours.keys()
+            union = len(self.neighbours) + len(other.neighbours)
             sim_score_so_far = 0
 
             for vertex in same_neighbours:
@@ -68,15 +69,8 @@ class _Vertex:
                 # 'like' bonus
                 elif self.neighbours[vertex] >= 7 and other.neighbours[vertex] >= 7:
                     sim_score_so_far += 1
-                # 'dumpster dive' bonus
-                elif self.neighbours[vertex] <= 4 and other.neighbours[vertex] <= 4:
-                    sim_score_so_far += 1
-                # 'great minds' bonus
-                if self.neighbours[vertex] != 10 and \
-                        self.neighbours[vertex] == other.neighbours[vertex]:
-                    sim_score_so_far += 2
 
-            return sim_score_so_far / min(self.degree(), other.degree())
+            return sim_score_so_far / union
 
 
 class Graph:
@@ -197,14 +191,14 @@ class Graph:
         """Return the similarity score between the two given reviewers in this graph.
 
         Raise a ValueError if reviewer1 or reviewer2 do not appear as vertices in this graph.
+
+        Preconditions:
+            -reviewer1 in self.get_all_vertices()
+            -reviewer 2 in self.get_all_vertices()
         """
-        vertices = self.get_all_vertices()
-        if reviewer1 not in vertices or reviewer2 not in vertices:
-            raise ValueError
-        else:
-            v1 = self._vertices[reviewer1]
-            v2 = self._vertices[reviewer2]
-            return v1.reviewer_similarity_score(v2)
+        v1 = self._vertices[reviewer1]
+        v2 = self._vertices[reviewer2]
+        return v1.reviewer_similarity_score(v2)
 
 
 def load_review_graph_df(df: pd.DataFrame, threshold: int = 0) -> Graph:
@@ -294,12 +288,13 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
 
     for movie in graph.get_neighbours(reviewer):
         for user in graph.get_neighbours(movie):
-            reviewers_so_far.add(user)
+            if graph.get_weight(user, movie) >= 9:
+                reviewers_so_far.add(user)
 
     sim_scores = {}
 
     for user in reviewers_so_far:
-        sim_score = graph.get_similarity_score(user, reviewer)
+        sim_score = round(graph.get_similarity_score(user, reviewer), 2)
 
         if sim_score > 0:
             if sim_score not in sim_scores:
@@ -307,7 +302,6 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
             else:
                 sim_scores[sim_score].append(user)
 
-    print(sim_scores)
     recommendations_so_far = set()
 
     while len(recommendations_so_far) < threshold:
