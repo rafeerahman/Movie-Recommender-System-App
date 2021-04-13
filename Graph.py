@@ -3,9 +3,10 @@
 from __future__ import annotations
 import pandas as pd
 from typing import Any, Union
-import csv
 import json
 import random
+import cleaning_data as cd
+
 
 class _Vertex:
     """A vertex in a movie review graph, used to represent a reviewer or a movie.
@@ -328,3 +329,16 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
         recommendations.pop()
 
     return recommendations
+
+
+def get_movie_titles() -> list[str]:
+    """ Return all the movie titles. """
+    df = cd.load_sample('sample.json')  # CHANGE TO 'load_dataframe' when done
+    clean = cd.clean_dataframe(df)
+    no_tv = cd.remove_shows(clean)
+
+    #  Need to update threshold to user's choice.
+    g = load_review_graph_df(no_tv, 5)
+    movies = list(g.get_all_vertices(kind='movie'))
+    # print(len(movies))
+    return movies
