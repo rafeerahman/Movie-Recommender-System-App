@@ -3,6 +3,7 @@
 from __future__ import annotations
 import pandas as pd
 from typing import Any, Union
+import csv
 import json
 import random
 import cleaning_data as cd
@@ -289,7 +290,7 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
 
     for movie in graph.get_neighbours(reviewer):
         for user in graph.get_neighbours(movie):
-            if graph.get_weight(user, movie) >= 9:
+            if graph.get_weight(user, movie) >= 8:
                 reviewers_so_far.add(user)
 
     sim_scores = {}
@@ -305,7 +306,7 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
 
     recommendations_so_far = set()
 
-    while len(recommendations_so_far) < threshold:
+    while len(recommendations_so_far) < threshold and len(sim_scores) > 0:
         similar_reviewers = sim_scores[max(sim_scores)]
 
         if similar_reviewers != []:
