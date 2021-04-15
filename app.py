@@ -34,6 +34,9 @@ def first_page() -> None:
     """
     in this function we make our first page
     """
+    def show_graph(event: Any) -> None:
+        """" On left mouse button click, open plotly graph in browser """
+        VISUALIZE.show()
     root = tk.Tk()
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -56,9 +59,10 @@ def first_page() -> None:
 
     image2 = tk.PhotoImage(file='images/Visualize.png')
     button2 = tk.Button(root, image=image2, bg='#121212', activebackground='#121212',
-                        borderwidth=0, command=VISUALIZE.show())
+                        borderwidth=0)
     button2.pack()
     button2.place(x=69, y=374)
+    button2.bind('<Button-1>', show_graph)
 
     root.title("Start")
     root.mainloop()
