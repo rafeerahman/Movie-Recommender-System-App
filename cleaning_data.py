@@ -3,7 +3,7 @@
 Instructions
 ===============================
 This Python module contains several functions that perform computations on
-dataframes or create new dataframes for the given dataset. A CSV file is created
+dataframes or create new dataframes for the given dataset. A JSON file is created
 from the filtered dataframe.
 """
 import json
@@ -59,7 +59,7 @@ def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 def remove_shows(df: pd.DataFrame) -> pd.DataFrame:
     """ Return a dataframe that has no tv show reviews. The year pattern decides if a
-    review is for a tv show.
+    review is for a TV show.
     Preconditions:
     - df is a dataframe returned by clean_dataframe
     """
@@ -90,8 +90,21 @@ def create_csv(df: pd.DataFrame) -> None:
 
 
 def create_json(df: pd.DataFrame) -> None:
-    """ Create a csv file from the filtered dataframe
+    """ Create a JSON file from the filtered dataframe
     Preconditions:
     - df is a dataframe created by calling the above functions
     """
     df.to_json("data/imdb_reviews.json", orient='split', index=False)
+
+
+if __name__ == '__main__':
+    import python_ta.contracts
+    python_ta.contracts.check_all_contracts()
+
+    import python_ta
+    python_ta.check_all(config={
+        'extra-imports': ['json', 'pandas'],
+        'allowed-io': ['load_dataframe', 'load_sample'],
+        'max-line-length': 100,
+        'disable': ['E1136']
+    })
