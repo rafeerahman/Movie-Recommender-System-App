@@ -18,7 +18,6 @@ Copyright and Usage Information
 This file is Copyright (c) 2021
 Rafee Rahman, Michael Galorro, Kimiya Raminrad, Mojan Majid
 """
-
 from __future__ import annotations
 from typing import Any, Union
 import json
