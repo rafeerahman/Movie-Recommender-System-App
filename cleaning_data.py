@@ -5,6 +5,12 @@ Instructions
 This Python module contains several functions that perform computations on
 dataframes or create new dataframes for the given dataset. A JSON file is created
 from the filtered dataframe.
+
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) 2021
+Rafee Rahman, Michael Galorro, Kimiya Raminrad, Mojan Majid
 """
 import json
 import pandas as pd
@@ -67,18 +73,6 @@ def remove_shows(df: pd.DataFrame) -> pd.DataFrame:
               r'(?:\sVideo)?(?:\s?\)$)(?!\sSeason\s\d+\,?\sEpisode\s\d+$)'
     movie_df = df[df["movie"].str.extract(year_re)[0].notna()]
     return movie_df.reset_index(drop=True)
-
-
-def get_movie_titles() -> list[str]:
-    """ Return all the movie titles. """
-    df = load_sample('sample_reviews.json')  # CHANGE TO 'load_dataframe' when done
-    new_df = clean_dataframe(df)
-
-    #  Need to update threshold to user's choice.
-    g = load_review_graph(new_df, 5)
-    movies = list(g.get_all_vertices(kind='movie'))
-    # print(len(movies))
-    return movies
 
 
 def create_csv(df: pd.DataFrame) -> None:
