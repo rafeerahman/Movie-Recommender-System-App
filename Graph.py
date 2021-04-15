@@ -9,13 +9,11 @@ import pandas as pd
 
 class _Vertex:
     """A vertex in a movie review graph, used to represent a reviewer or a movie.
-
     Instance Attributes:
         - item: The data stored in this vertex, representing a user or book.
         - kind: The type of this vertex: 'user' or 'book'.
         - neighbours: The vertices that are adjacent to this vertex, and their corresponding
             edge weights.
-
     Representation Invariants:
         - self not in self.neighbours
         - all(self in u.neighbours for u in self.neighbours)
@@ -27,9 +25,7 @@ class _Vertex:
 
     def __init__(self, item: Any, kind: str) -> None:
         """Initialize a new vertex with the given item and kind.
-
         This vertex is initialized with no neighbours.
-
         Preconditions:
             - kind in {'reviewer', 'movie'}
         """
@@ -41,17 +37,15 @@ class _Vertex:
         """Return the degree of this vertex."""
         return len(self.neighbours)
 
-    def reviewer_similarity_score(self, other: _Vertex):
+    def reviewer_similarity_score(self, other: _Vertex) -> float:
         """Return the similarity score between this vertex and other.
-
         Similarity score is based on how many movies both reviewers rated, and if those scores are
         similar.
-
         Preconditions:
             - self.kind == 'reviewer'
             - other.kind == 'reviewer'
         """
-        if self.degree == 0 or other.degree == 0:
+        if self.degree() == 0 or other.degree == 0:
             return 0.0
         else:
             neighbours = self.neighbours
@@ -89,7 +83,6 @@ class Graph:
     def add_reviewer(self, movies: list[str]) -> None:
         """Add a reviewer vertex to this graph with every movie in movies reviewed with a
         10 rating. Each edge to a movie is one-way.
-
         Preconditions:
             - all([movie in graph.get_all_vertices() for movie in movies])"""
 
@@ -101,10 +94,9 @@ class Graph:
 
         self._vertices['CSC111_Reviewer'] = reviewer
 
-    def suggest_movies(self, reviewer: Any, other: Any) -> List[Any]:
+    def suggest_movies(self, reviewer: Any, other: Any) -> list[Any]:
         """Suggests movies for reviewer based on movies that the other reviewer has rated highly.
         Returns an empty list if there are no good suggestions available.
-
         Preconditions:
             - reviewer in graph.get_all_vertices()
             - other in graph.get_all_vertices()
@@ -121,10 +113,8 @@ class Graph:
 
     def add_vertex(self, item: Any, kind: str) -> None:
         """Add a vertex with the given item and kind to this graph.
-
         The new vertex is not adjacent to any other vertices.
         Do nothing if the given item is already in this graph.
-
         Preconditions:
             - kind in {'reviewer', 'movie'}
         """
@@ -134,9 +124,7 @@ class Graph:
     def add_edge(self, item1: Any, item2: Any, weight: Union[int, float]) -> None:
         """Add an edge between the two vertices with the given items in this graph,
         with the given weight.
-
         Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
-
         Preconditions:
             - item1 != item2
         """
@@ -153,7 +141,6 @@ class Graph:
 
     def get_neighbours(self, item: Any) -> set:
         """Return a set of the neighbours of the given item.
-
         Raise a ValueError if item does not appear as a vertex in this graph.
         """
         if item in self._vertices:
@@ -164,9 +151,7 @@ class Graph:
 
     def get_weight(self, item1: Any, item2: Any) -> Union[int, float]:
         """Return the weight of the edge between the given items.
-
         Return 0 if item1 and item2 are not adjacent.
-
         Preconditions:
             - item1 and item2 are vertices in this graph
         """
@@ -176,9 +161,7 @@ class Graph:
 
     def get_all_vertices(self, kind: str = '') -> set:
         """Return a set of all vertex items in this graph.
-
         If kind != '', only return the items of the given vertex kind.
-
         Preconditions:
             - kind in {'', 'reviewer', 'movie'}
         """
@@ -189,9 +172,7 @@ class Graph:
 
     def get_similarity_score(self, reviewer1: Any, reviewer2: Any) -> float:
         """Return the similarity score between the two given reviewers in this graph.
-
         Raise a ValueError if reviewer1 or reviewer2 do not appear as vertices in this graph.
-
         Preconditions:
             -reviewer1 in self.get_all_vertices()
             -reviewer 2 in self.get_all_vertices()
@@ -204,7 +185,6 @@ class Graph:
 def load_review_graph_df(df: pd.DataFrame, threshold: int = 0) -> Graph:
     """Return a movie review graph from the given data set. Only includes reviewers with more
     reviews than the given threshold. Default threshold is 0.
-
     Preconditions:
         - df is a dataframe returned by clean_dataframe
     """
@@ -235,7 +215,6 @@ def load_review_graph_df(df: pd.DataFrame, threshold: int = 0) -> Graph:
 def load_review_graph_json(reviews_file: str, threshold: int = 0) -> Graph:
     """Return a movie review graph from the given data set. Only includes reviewers with more
     reviews than the given threshold. Default threshold is 0.
-
     Preconditions:
         - reviews_file is a JSON file returned by create_json
     """
@@ -266,21 +245,15 @@ def load_review_graph_json(reviews_file: str, threshold: int = 0) -> Graph:
     return graph
 
 
-def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[Any]:
+def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> list[Any]:
     """Return a list of movie suggestions based on the similarity score of the given reviewer
      in relation to the rest of the reviewers in the given graph. The list is at
      most as long as the given threshold.
-
     Preconditions:
         - threshold >= 1
         - reviewer in graph.get_all_vertices()
     """
-    reviewers_so_far = set()
-
-    for movie in graph.get_neighbours(reviewer):
-        for user in graph.get_neighbours(movie):
-            if graph.get_weight(user, movie) >= 8:
-                reviewers_so_far.add(user)
+    reviewers_so_far = helper(reviewer, graph)
 
     sim_scores = {}
 
@@ -317,6 +290,17 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
 
     else:
         return recommendations
+
+
+def helper(reviewer: Any, graph: Graph) -> set:
+    """this is a helper function for  get_suggestions()"""
+    reviewers_so_far = set()
+
+    for movie in graph.get_neighbours(reviewer):
+        for user in graph.get_neighbours(movie):
+            if graph.get_weight(user, movie) >= 8:
+                reviewers_so_far.add(user)
+    return reviewers_so_far
 
 
 if __name__ == '__main__':
