@@ -4,10 +4,13 @@ Instructions
 ===============================
 
 This Python module contains a Graph class from University of Toronto's CSC111
-course, and builds a network of movies and reviewers. It also
-contains functions to produce recommendations based on our network.
+course, and builds a network of movies and reviewers. The 'to_networkx' function
+is taken from CSC111's assignment 3, where the link is referenced below.
+This file also contains functions to produce recommendations based on our network.
 
 CSC111 Course Notes: https://www.teach.cs.toronto.edu/~csc110y/fall/notes/
+The link to assignment 3 can be found here,
+https://www.teach.cs.toronto.edu/~csc111h/winter/assignments/a3/handout/
 
 Copyright and Usage Information
 ===============================
@@ -188,7 +191,7 @@ class Graph:
             return set(self._vertices.keys())
 
     def get_similarity_score(self, reviewer1: Any, reviewer2: Any) -> float:
-        """Return the similarity score between the two given reviewers in this graph.
+        """ Return the similarity score between the two given reviewers in this graph.
         Raise a ValueError if reviewer1 or reviewer2 do not appear as vertices in this graph.
         Preconditions:
             -reviewer1 in self.get_all_vertices()
@@ -199,8 +202,7 @@ class Graph:
         return v1.reviewer_similarity_score(v2)
 
     def to_networkx(self, max_vertices: int = 5000) -> nx.Graph:
-        """ This code is from University of Toronto's CSC111, Assignment 3 graph code.
-        More information can be found in our project report.
+        """ This code is from University of Toronto's CSC111, Assignment 3.
 
         The link to assignment 3 can be found here,
         https://www.teach.cs.toronto.edu/~csc111h/winter/assignments/a3/handout/

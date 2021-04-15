@@ -28,8 +28,10 @@ USER_COLOUR = 'rgb(105, 89, 205)'
 def visualize_graph(graph: graph_construction.Graph,
                     layout: str = 'spring_layout',
                     max_vertices: int = 1000) -> Figure:
-    """ This code was written by following code from University of Toronto's
-    CSC111, Assignment 3 code. More information can be found in our project report.
+    """ This code was taken from University of Toronto's
+    CSC111, Assignment 3 code. Some updates to the colors and variables
+    have been made. The link to assignment 3 can be found in our module
+    description.
 
     Use plotly and networkx to visualize the given graph.
 
