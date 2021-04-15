@@ -41,14 +41,14 @@ def first_page() -> None:
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
-    new_font = Font(family='Montserrat', size=18)
+    new_font = Font(family='Segoe UI', size=18)
     root['background'] = '#121212'
     root.geometry("{}x{}+{}+{}".format(WINDOW_WIDTH, WINDOW_HEIGHT, screen_width // 2 - 200,
                                        screen_height // 2 - 400))
 
     label = tk.Label(root, text='MOVIE\nRECOMMENDER', bg='#121212', font=new_font, fg='white')
     label.pack()
-    label.place(x=86, y=110)
+    label.place(x=95, y=110)
 
     image1 = tk.PhotoImage(file='images/Enter.png')
     button1 = tk.Button(root, image=image1, bg='#121212', activebackground='#121212',
@@ -138,10 +138,10 @@ def new_window1() -> None:
     new_label = tk.Label(root,
                          bg='#121212', fg='white',
                          text="Add the Title of\nYour Favourite Movies",
-                         font=Font(family='Montserrat', size=18))
+                         font=Font(family='Segoe UI', size=18))
     new_label.place(x=65, y=116)
 
-    entry = tk.Entry(root, width=19, font=Font(family='Montserrat', size=16))
+    entry = tk.Entry(root, width=24, font=Font(family='Segoe UI', size=16))
     entry.place(x=61, y=204)
 
     my_list = tk.Listbox(root, font=Font(family='Segoe UI', size=8), width=45)
@@ -156,12 +156,12 @@ def new_window1() -> None:
     # Binding on entry box with the suggest function
     entry.bind("<KeyRelease>", suggest)
 
-    lbl_ask = tk.Label(root, font=Font(family='Montserrat', size=12),
+    lbl_ask = tk.Label(root, font=Font(family='Segoe UI', size=12),
                        bg='#121212', fg='white', justify=tk.LEFT,
                        text='Number of\nrecommendations?')
     lbl_ask.place(x=61, y=455)
 
-    entry_threshold = tk.Entry(root, width=8, font=Font(family='Montserrat', size=12))
+    entry_threshold = tk.Entry(root, width=8, font=Font(family='Segoe UI', size=12))
     entry_threshold.place(x=240, y=465)
 
     image1 = tk.PhotoImage(file='images/add.png')
@@ -172,7 +172,7 @@ def new_window1() -> None:
 
     var = tk.StringVar()
     var.set('')
-    lbl = tk.Label(root, font=Font(family='Montserrat', size=12),
+    lbl = tk.Label(root, font=Font(family='Segoe UI', size=12),
                    textvariable=var, bg='#121212', fg='white')
     lbl.place(x=156, y=691)
 
@@ -208,9 +208,9 @@ def page_three() -> None:
     my_scroll = tk.Scrollbar(root)
     my_scroll.pack(side=tk.RIGHT, fill=tk.Y, )
 
-    list_font = Font(family='Montserrat', size=12)
+    list_font = Font(family='Segoe UI', size=12)
     my_list = tk.Listbox(root, font=list_font, fg='white', bg='#121212', width=WINDOW_WIDTH - 50,
-                         height=WINDOW_HEIGHT - 200,
+                         height=WINDOW_HEIGHT - 50,
                          yscrollcommand=my_scroll.set)
     for i in range(1, len(recommend_movie)):
         my_list.insert(tk.END, str(recommend_movie[i]))
