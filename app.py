@@ -51,9 +51,9 @@ def new_window1() -> None:
     def fill(event) -> None:
         """ Update entry when listbox is clicked """
         # Delete from entry box
-        event.delete(0, tk.END)
+        entry.delete(0, tk.END)
 
-        event.insert(0, my_list.get(tk.ACTIVE))
+        entry.insert(0, my_list.get(tk.ACTIVE))
 
     def update(data: set) -> None:
         """ Updating the listbox for suggestions """
