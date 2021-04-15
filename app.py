@@ -224,3 +224,13 @@ def page_three() -> None:
     # recommend_movie = Graph.get_suggestions("user", graph)
     root.title("Here are your suggestions:")
     root.mainloop()
+
+
+if __name__ == '__main__':
+    import python_ta
+    python_ta.check_all(config={
+        'extra-imports': ['tkinter', 'tkinter.font', 'Graph'],
+        'allowed-io': [],
+        'max-line-length': 100,
+        'disable': ['E1136']
+    })
