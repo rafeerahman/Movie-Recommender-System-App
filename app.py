@@ -1,4 +1,20 @@
-"""the Tkinter file for creating UI windows"""
+"""CSC111 Winter 2021 Project Tkinter App file
+
+Instructions
+===============================
+
+This Python module is made for creating the User Interface for our program.
+
+PyTA may raise overuse of local variable errors,
+but should be ignored as many variables may be required
+for using lots of widgets.
+
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) 2021
+Rafee Rahman, Michael Galarro, Kimiya Raminrad, Mojan Majid
+"""
 import tkinter as tk
 from tkinter.font import Font
 from typing import Any
@@ -18,10 +34,6 @@ def first_page() -> None:
     """
     in this function we make our first page
     """
-    def show_graph(event: Any) -> None:
-        """ Small """
-        VISUALIZE.show()
-
     root = tk.Tk()
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -44,10 +56,9 @@ def first_page() -> None:
 
     image2 = tk.PhotoImage(file='images/Visualize.png')
     button2 = tk.Button(root, image=image2, bg='#121212', activebackground='#121212',
-                        borderwidth=0)
+                        borderwidth=0, command=VISUALIZE.show())
     button2.pack()
     button2.place(x=69, y=374)
-    button2.bind('<Button-1>', show_graph)
 
     root.title("Start")
     root.mainloop()
@@ -57,13 +68,17 @@ def new_window1() -> None:
     """ The window after clicking the 'enter' button on the first window. """
 
     def fill(event: Any) -> None:
-        """ Update entry when listbox is clicked """
+        """ Updates entry when listbox is clicked.
+        The event parameter is here for Tkinter polymorphic reasons.
+        """
         # Delete from entry box
         entry.delete(0, tk.END)
         entry.insert(0, my_list.get(tk.ACTIVE))
 
     def update(data: set) -> None:
-        """ Updating the listbox for suggestions """
+        """ Updating the listbox for suggestions.
+        The event parameter is here for Tkinter polymorphic reasons.
+        """
         # Clear the box at the beginning
         my_list.delete(0, tk.END)
 
@@ -71,7 +86,9 @@ def new_window1() -> None:
             my_list.insert(tk.END, item)
 
     def suggest(event: Any) -> None:
-        """ Suggest/Check if entry is a movie title """
+        """ Suggest/Check if entry is a movie title.
+        The event parameter is here for Tkinter polymorphic reasons.
+        """
         # Get what was typed by user
         typed = entry.get()
 
@@ -101,7 +118,7 @@ def new_window1() -> None:
             root.after(2000, remove_lbl)
 
     def remove_lbl() -> None:
-        """ Removes 'success' or 'unsuccessful' after 2 seconds"""
+        """ Removes 'success' or 'unsuccessful' after 2 seconds. """
         var.set('')
 
     def update_threshold() -> None:
@@ -110,24 +127,20 @@ def new_window1() -> None:
 
     root = tk.Tk()
     root['background'] = '#121212'
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    root.geometry("{}x{}+{}+{}".format(WINDOW_WIDTH, WINDOW_HEIGHT, screen_width // 2 - 200,
-                                       screen_height // 2 - 400))
-
-    new_font = Font(family='Montserrat', size=18)
-    med_font = Font(family='Montserrat', size=16)
+    root.geometry("{}x{}+{}+{}".format(WINDOW_WIDTH, WINDOW_HEIGHT,
+                                       root.winfo_screenwidth() // 2 - 200,
+                                       root.winfo_screenheight() // 2 - 400))
 
     new_label = tk.Label(root,
                          bg='#121212', fg='white',
-                         text="Add the Title of\nYour Favourite Movies", font=new_font)
+                         text="Add the Title of\nYour Favourite Movies",
+                         font=Font(family='Montserrat', size=18))
     new_label.place(x=65, y=116)
 
-    entry = tk.Entry(root, width=19, font=med_font)
+    entry = tk.Entry(root, width=19, font=Font(family='Montserrat', size=16))
     entry.place(x=61, y=204)
 
-    list_font = Font(family='Segoe UI', size=8)
-    my_list = tk.Listbox(root, font=list_font, width=45)
+    my_list = tk.Listbox(root, font=Font(family='Segoe UI', size=8), width=45)
     my_list.place(x=61, y=263)
 
     # Add movies to the list box
@@ -139,12 +152,12 @@ def new_window1() -> None:
     # Binding on entry box with the suggest function
     entry.bind("<KeyRelease>", suggest)
 
-    small_font = Font(family='Montserrat', size=12)
-    lbl_ask = tk.Label(root, font=small_font, bg='#121212', fg='white', justify=tk.LEFT,
+    lbl_ask = tk.Label(root, font=Font(family='Montserrat', size=12),
+                       bg='#121212', fg='white', justify=tk.LEFT,
                        text='Number of\nrecommendations?')
     lbl_ask.place(x=61, y=455)
 
-    entry_threshold = tk.Entry(root, width=8, font=small_font)
+    entry_threshold = tk.Entry(root, width=8, font=Font(family='Montserrat', size=12))
     entry_threshold.place(x=240, y=465)
 
     image1 = tk.PhotoImage(file='images/add.png')
@@ -155,7 +168,8 @@ def new_window1() -> None:
 
     var = tk.StringVar()
     var.set('')
-    lbl = tk.Label(root, font=small_font, textvariable=var, bg='#121212', fg='white')
+    lbl = tk.Label(root, font=Font(family='Montserrat', size=12),
+                   textvariable=var, bg='#121212', fg='white')
     lbl.place(x=156, y=691)
 
     image2 = tk.PhotoImage(file='images/generate.png')
@@ -171,12 +185,11 @@ def new_window1() -> None:
 
 
 def page_three() -> None:
-    """ make page three for showing our result to the user"""
+    """ Make page three for showing our result to the user. """
     root = tk.Tk()
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
-    new_font = Font(family='Montserrat', size=16)
     root['background'] = '#121212'
     root.geometry("{}x{}+{}+{}".format(WINDOW_WIDTH, WINDOW_HEIGHT, screen_width // 2 - 200,
                                        screen_height // 2 - 400))

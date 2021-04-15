@@ -1,4 +1,20 @@
-""" Visualization of our Graph object """
+""" CSC111 Winter 2021 Project Code
+
+Instructions
+===============================
+
+This Python module uses University of Toronto's CSC111's assignment 3
+visualization code, and adds some UI variable/UI changes.
+
+The link to assignment 3 can be found here,
+https://www.teach.cs.toronto.edu/~csc111h/winter/assignments/a3/handout/
+
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) 2021
+Rafee Rahman, Michael Galarro, Kimiya Raminrad, Mojan Majid
+"""
 import networkx as nx
 from plotly.graph_objs import Scatter, Figure
 import graph_construction
@@ -12,8 +28,8 @@ USER_COLOUR = 'rgb(105, 89, 205)'
 def visualize_graph(graph: graph_construction.Graph,
                     layout: str = 'spring_layout',
                     max_vertices: int = 1000) -> Figure:
-    """ This code is from University of Toronto's CSC111, Assignment 3 graph code.
-    More information can be found in our project report.
+    """ This code was written by following code from University of Toronto's
+    CSC111, Assignment 3 code. More information can be found in our project report.
 
     Use plotly and networkx to visualize the given graph.
 
@@ -71,3 +87,12 @@ def visualize_graph(graph: graph_construction.Graph,
 
     return fig
 
+
+if __name__ == '__main__':
+    import python_ta
+    python_ta.check_all(config={
+        'extra-imports': ['networkx', 'plotly.graph_objs', 'graph_construction'],
+        'allowed-io': ['load_review_graph_json'],
+        'max-line-length': 100,
+        'disable': ['E1136']
+    })

@@ -1,4 +1,18 @@
-"""CSC111 Winter 2021"""
+"""CSC111 Winter 2021 Project Graph File
+
+Instructions
+===============================
+
+This Python module contains a Graph class from University of Toronto's CSC111
+course, and builds a network of movies and reviewers. It also
+contains functions to produce recommendations based on our network.
+
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) 2021
+Rafee Rahman, Michael Galarro, Kimiya Raminrad, Mojan Majid
+"""
 
 from __future__ import annotations
 from typing import Any, Union
@@ -185,6 +199,8 @@ class Graph:
         """ This code is from University of Toronto's CSC111, Assignment 3 graph code.
         More information can be found in our project report.
 
+        The link to assignment 3 can be found here,
+        https://www.teach.cs.toronto.edu/~csc111h/winter/assignments/a3/handout/
         Convert this graph into a networkx Graph.
 
         max_vertices specifies the maximum number of vertices that can appear in the graph.
