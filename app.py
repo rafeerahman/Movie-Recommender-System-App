@@ -48,7 +48,7 @@ def first_page() -> None:
 def new_window1() -> None:
     """ make a new window for button Enter"""
 
-    def fill(event: Any) -> None:
+    def fill(event) -> None:
         """ Update entry when listbox is clicked """
         # Delete from entry box
         event.delete(0, tk.END)
@@ -63,7 +63,7 @@ def new_window1() -> None:
         for item in data:
             my_list.insert(tk.END, item)
 
-    def suggest(event: Any) -> None:
+    def suggest(event) -> None:
         """ Suggest/Check if entry is a movie title """
         # Get what was typed by user
         typed = entry.get()
@@ -79,7 +79,7 @@ def new_window1() -> None:
         # Updates listbox
         update(data)
 
-    def add(event: Any) -> None:
+    def add(event) -> None:
         """ Add all items to a list"""
         typed = entry.get()
         if typed not in MOVIE_TITLES:
