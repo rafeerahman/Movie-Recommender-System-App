@@ -1,11 +1,10 @@
 """CSC111 Winter 2021"""
 
 from __future__ import annotations
-import pandas as pd
 from typing import Any, Union
 import json
 import random
-import cleaning_data as cd
+import pandas as pd
 
 
 class _Vertex:
@@ -318,3 +317,16 @@ def get_suggestions(reviewer: Any, graph: Graph, threshold: int = 10) -> List[An
 
     else:
         return recommendations
+
+
+if __name__ == '__main__':
+    import python_ta.contracts
+    python_ta.contracts.check_all_contracts()
+
+    import python_ta
+    python_ta.check_all(config={
+        'extra-imports': ['pandas', 'json', 'random'],
+        'allowed-io': ['load_review_graph_json'],
+        'max-line-length': 100,
+        'disable': ['E1136']
+    })
