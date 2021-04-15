@@ -5,7 +5,7 @@ from typing import Any, Union
 import json
 import random
 import pandas as pd
-
+import networkx as nx
 
 class _Vertex:
     """A vertex in a movie review graph, used to represent a reviewer or a movie.
@@ -181,6 +181,33 @@ class Graph:
         v2 = self._vertices[reviewer2]
         return v1.reviewer_similarity_score(v2)
 
+    def to_networkx(self, max_vertices: int = 5000) -> nx.Graph:
+        """ This code is from University of Toronto's CSC111, Assignment 3 graph code.
+        More information can be found in our project report.
+
+        Convert this graph into a networkx Graph.
+
+        max_vertices specifies the maximum number of vertices that can appear in the graph.
+        (This is necessary to limit the visualization output for large graphs.)
+
+        Note that this method is provided for you, and you shouldn't change it.
+        """
+        graph_nx = nx.Graph()
+        for v in self._vertices.values():
+            graph_nx.add_node(v.item, kind=v.kind)
+
+            for u in v.neighbours:
+                if graph_nx.number_of_nodes() < max_vertices:
+                    graph_nx.add_node(u.item, kind=u.kind)
+
+                if u.item in graph_nx.nodes:
+                    graph_nx.add_edge(v.item, u.item)
+
+            if graph_nx.number_of_nodes() >= max_vertices:
+                break
+
+        return graph_nx
+
 
 def load_review_graph_df(df: pd.DataFrame, threshold: int = 0) -> Graph:
     """Return a movie review graph from the given data set. Only includes reviewers with more
@@ -306,7 +333,7 @@ def helper(reviewer: Any, graph: Graph) -> set:
 if __name__ == '__main__':
     import python_ta
     python_ta.check_all(config={
-        'extra-imports': ['pandas', 'json', 'random'],
+        'extra-imports': ['networkx', 'pandas', 'json', 'random'],
         'allowed-io': ['load_review_graph_json'],
         'max-line-length': 100,
         'disable': ['E1136']

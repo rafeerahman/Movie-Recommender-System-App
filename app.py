@@ -3,18 +3,25 @@ import tkinter as tk
 from tkinter.font import Font
 from typing import Any
 import graph_construction
+from visualization import visualize_graph
+
 WINDOW_WIDTH = 375
 WINDOW_HEIGHT = 812
 THRESHOLD = [10]  # Default Threshold
 GRAPH = graph_construction.load_review_graph_json('data/imdb_reviews.json')
 MOVIE_TITLES = GRAPH.get_all_vertices('movie')
 MOVIES_TO_SUGGEST = []
+VISUALIZE = visualize_graph(GRAPH)
 
 
 def first_page() -> None:
     """
     in this function we make our first page
     """
+    def show_graph(event: Any) -> None:
+        """ Small """
+        VISUALIZE.show()
+
     root = tk.Tk()
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -40,20 +47,20 @@ def first_page() -> None:
                         borderwidth=0)
     button2.pack()
     button2.place(x=69, y=374)
+    button2.bind('<Button-1>', show_graph)
 
     root.title("Start")
     root.mainloop()
 
 
 def new_window1() -> None:
-    """ make a new window for button Enter"""
+    """ The window after clicking the 'enter' button on the first window. """
 
     def fill(event: Any) -> None:
         """ Update entry when listbox is clicked """
         # Delete from entry box
-        event.delete(0, tk.END)
-
-        event.insert(0, my_list.get(tk.ACTIVE))
+        entry.delete(0, tk.END)
+        entry.insert(0, my_list.get(tk.ACTIVE))
 
     def update(data: set) -> None:
         """ Updating the listbox for suggestions """
@@ -83,7 +90,7 @@ def new_window1() -> None:
         """ Add all items to a list"""
         typed = entry.get()
         if typed not in MOVIE_TITLES:
-            var.set('it is not in our dataset, sorry!')
+            var.set('It is not in our dataset, sorry!')
             root.after(2000, remove_lbl)
         if typed not in MOVIES_TO_SUGGEST and typed != '':
             MOVIES_TO_SUGGEST.append(typed)
@@ -92,8 +99,6 @@ def new_window1() -> None:
         else:
             var.set('Not added')
             root.after(2000, remove_lbl)
-
-        # print(movies_to_suggest)
 
     def remove_lbl() -> None:
         """ Removes 'success' or 'unsuccessful' after 2 seconds"""
@@ -111,13 +116,14 @@ def new_window1() -> None:
                                        screen_height // 2 - 400))
 
     new_font = Font(family='Montserrat', size=18)
+    med_font = Font(family='Montserrat', size=16)
 
     new_label = tk.Label(root,
                          bg='#121212', fg='white',
                          text="Add the Title of\nYour Favourite Movies", font=new_font)
     new_label.place(x=65, y=116)
 
-    entry = tk.Entry(root, width=17, font=new_font)
+    entry = tk.Entry(root, width=19, font=med_font)
     entry.place(x=61, y=204)
 
     list_font = Font(family='Segoe UI', size=8)
@@ -178,7 +184,7 @@ def page_three() -> None:
     # frame = Frame(root, bd=5, bg="#5841A6")
     # frame.pack()
 
-    # need to be change
+    # Need to be change
     GRAPH.add_reviewer(MOVIES_TO_SUGGEST)
     recommend_movie = graph_construction.get_suggestions('CSC111_Reviewer', GRAPH, THRESHOLD[0])
 
@@ -186,11 +192,11 @@ def page_three() -> None:
     my_scroll.pack(side=tk.RIGHT, fill=tk.Y, )
 
     list_font = Font(family='Montserrat', size=12)
-    my_list = tk.Listbox(root, font=list_font, fg='white', bg='#121212', width=WINDOW_HEIGHT - 50,
-                         height=WINDOW_WIDTH - 50,
+    my_list = tk.Listbox(root, font=list_font, fg='white', bg='#121212', width=WINDOW_WIDTH - 50,
+                         height=WINDOW_HEIGHT - 200,
                          yscrollcommand=my_scroll.set)
     for i in range(1, len(recommend_movie)):
-        my_list.insert(tk.END, "Movie " + str(recommend_movie[i]))
+        my_list.insert(tk.END, str(recommend_movie[i]))
     my_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
     my_scroll.config(command=my_list.yview)
@@ -198,11 +204,7 @@ def page_three() -> None:
     # top_frame = Frame(root, bd=5, bg="#5841A6")
     # top_frame.pack(side=TOP)
 
-    label = tk.Label(root, bg='#121212', textvariable="movie you might like...", font=new_font,
-                     fg='white')
-    label.pack()
-    label.place(x=89, y=159)
-
+    # --- FOR SAMPLE DATA ---
     # image1 = tk.PhotoImage(file='images/Group 1.png')
     # button1 = Button(root, image=image1, bg='#5841A6', text="START",
     #                  command=lambda: [f() for f in [root.destroy, new_window1]],
@@ -219,14 +221,15 @@ def page_three() -> None:
     # for items in movies_to_suggest:
     #     graph.add_edge("user", items, 10)
     # recommend_movie = Graph.get_suggestions("user", graph)
-    root.title("Here are your suggestions:")
+
+    root.title("Here are your suggestions")
     root.mainloop()
 
 
 if __name__ == '__main__':
     import python_ta
     python_ta.check_all(config={
-        'extra-imports': ['tkinter', 'tkinter.font', 'graph_construction'],
+        'extra-imports': ['visualization', 'tkinter', 'tkinter.font', 'graph_construction'],
         'allowed-io': [],
         'max-line-length': 100,
         'disable': ['E1136']
