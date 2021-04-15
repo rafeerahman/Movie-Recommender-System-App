@@ -32,10 +32,12 @@ VISUALIZE = visualize_graph(GRAPH)
 
 def first_page() -> None:
     """
-    in this function we make our first page
+    In this function we make our first page using Tkinter widgets.
     """
     def show_graph(event: Any) -> None:
-        """" On left mouse button click, open plotly graph in browser """
+        """" On left mouse button click, open plotly graph in browser.
+        The event parameter is here for Tkinter polymorphic reasons.
+        """
         VISUALIZE.show()
     root = tk.Tk()
     screen_width = root.winfo_screenwidth()
@@ -108,7 +110,9 @@ def new_window1() -> None:
         update(data)
 
     def add(event: Any) -> None:
-        """ Add all items to a list"""
+        """ Add all items in the entry box to a list of the users favorite movies.
+        The event parameter is here for Tkinter polymorphic reasons.
+        """
         typed = entry.get()
         if typed not in MOVIE_TITLES:
             var.set('It is not in our dataset, sorry!')
