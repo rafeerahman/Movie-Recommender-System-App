@@ -1,4 +1,4 @@
-""" CSC111 Winter 2021 Project Code
+"""CSC111 Winter 2021 Project Code
 
 Instructions
 ===============================
@@ -13,7 +13,7 @@ Copyright and Usage Information
 ===============================
 
 This file is Copyright (c) 2021
-Rafee Rahman, Michael Galarro, Kimiya Raminrad, Mojan Majid
+Rafee Rahman, Michael Galorro, Kimiya Raminrad, Mojan Majid
 """
 import networkx as nx
 from plotly.graph_objs import Scatter, Figure

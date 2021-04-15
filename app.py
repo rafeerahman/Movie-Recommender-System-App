@@ -13,7 +13,7 @@ Copyright and Usage Information
 ===============================
 
 This file is Copyright (c) 2021
-Rafee Rahman, Michael Galarro, Kimiya Raminrad, Mojan Majid
+Rafee Rahman, Michael Galorro, Kimiya Raminrad, Mojan Majid
 """
 import tkinter as tk
 from tkinter.font import Font

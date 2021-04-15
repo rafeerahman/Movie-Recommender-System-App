@@ -7,11 +7,13 @@ This Python module contains a Graph class from University of Toronto's CSC111
 course, and builds a network of movies and reviewers. It also
 contains functions to produce recommendations based on our network.
 
+CSC111 Course Notes: https://www.teach.cs.toronto.edu/~csc110y/fall/notes/
+
 Copyright and Usage Information
 ===============================
 
 This file is Copyright (c) 2021
-Rafee Rahman, Michael Galarro, Kimiya Raminrad, Mojan Majid
+Rafee Rahman, Michael Galorro, Kimiya Raminrad, Mojan Majid
 """
 
 from __future__ import annotations
@@ -20,6 +22,7 @@ import json
 import random
 import pandas as pd
 import networkx as nx
+
 
 class _Vertex:
     """A vertex in a movie review graph, used to represent a reviewer or a movie.
@@ -201,6 +204,7 @@ class Graph:
 
         The link to assignment 3 can be found here,
         https://www.teach.cs.toronto.edu/~csc111h/winter/assignments/a3/handout/
+
         Convert this graph into a networkx Graph.
 
         max_vertices specifies the maximum number of vertices that can appear in the graph.
