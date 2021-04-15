@@ -1,47 +1,43 @@
-# """this file ..."""
-from tkinter import *
-from typing import Any
+"""the Tkinter file for creating UI windows"""
 import tkinter as tk
 from tkinter.font import Font
-from tkinter import messagebox
-import Graph
-
-
-window_width = 375
-window_height = 812
+from typing import Any
+import graph_construction
+WINDOW_WIDTH = 375
+WINDOW_HEIGHT = 812
 THRESHOLD = [10]  # Default Threshold
-graph = Graph.load_review_graph_json('data/imdb_reviews.json')
-movie_titles = graph.get_all_vertices('movie')
-movies_to_suggest = []
+GRAPH = graph_construction.load_review_graph_json('data/imdb_reviews.json')
+MOVIE_TITLES = GRAPH.get_all_vertices('movie')
+MOVIES_TO_SUGGEST = []
 
 
 def first_page() -> None:
     """
-    make first page
+    in this function we make our first page
     """
-    root = Tk()
+    root = tk.Tk()
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
     new_font = Font(family='Montserrat', size=18)
     root['background'] = '#121212'
-    root.geometry("{}x{}+{}+{}".format(window_width, window_height, screen_width // 2 - 200,
+    root.geometry("{}x{}+{}+{}".format(WINDOW_WIDTH, WINDOW_HEIGHT, screen_width // 2 - 200,
                                        screen_height // 2 - 400))
 
-    label = Label(root, text='MOVIE\nRECOMMENDER', bg='#121212', font=new_font, fg='white')
+    label = tk.Label(root, text='MOVIE\nRECOMMENDER', bg='#121212', font=new_font, fg='white')
     label.pack()
     label.place(x=86, y=110)
 
     image1 = tk.PhotoImage(file='images/Enter.png')
-    button1 = Button(root, image=image1, bg='#121212', activebackground='#121212',
-                     command=lambda: [f() for f in [root.destroy, new_window1]],
-                     borderwidth=0)
+    button1 = tk.Button(root, image=image1, bg='#121212', activebackground='#121212',
+                        command=lambda: [f() for f in [root.destroy, new_window1]],
+                        borderwidth=0)
     button1.pack()
     button1.place(x=69, y=230)
 
     image2 = tk.PhotoImage(file='images/Visualize.png')
-    button2 = Button(root, image=image2, bg='#121212', activebackground='#121212',
-                     borderwidth=0)
+    button2 = tk.Button(root, image=image2, bg='#121212', activebackground='#121212',
+                        borderwidth=0)
     button2.pack()
     button2.place(x=69, y=374)
 
@@ -50,47 +46,47 @@ def first_page() -> None:
 
 
 def new_window1() -> None:
-    """ make new window """
+    """ make a new window for button Enter"""
 
-    def fill(event) -> None:
+    def fill(event: Any) -> None:
         """ Update entry when listbox is clicked """
         # Delete from entry box
-        entry.delete(0, END)
+        event.delete(0, tk.END)
 
-        entry.insert(0, my_list.get(ACTIVE))
+        event.insert(0, my_list.get(tk.ACTIVE))
 
     def update(data: set) -> None:
         """ Updating the listbox for suggestions """
         # Clear the box at the beginning
-        my_list.delete(0, END)
+        my_list.delete(0, tk.END)
 
         for item in data:
-            my_list.insert(END, item)
+            my_list.insert(tk.END, item)
 
-    def suggest(event) -> None:
+    def suggest(event: Any) -> None:
         """ Suggest/Check if entry is a movie title """
         # Get what was typed by user
         typed = entry.get()
 
         if typed == '':
-            data = movie_titles
+            data = MOVIE_TITLES
         else:
             data = []
-            for item in movie_titles:
+            for item in MOVIE_TITLES:
                 if typed.lower() in item.lower():
                     data.append(item)
 
         # Updates listbox
         update(data)
 
-    def add(event) -> None:
+    def add(event: Any) -> None:
         """ Add all items to a list"""
         typed = entry.get()
-        if typed not in movie_titles:
+        if typed not in MOVIE_TITLES:
             var.set('it is not in our dataset, sorry!')
             root.after(2000, remove_lbl)
-        if typed not in movies_to_suggest and typed != '':
-            movies_to_suggest.append(typed)
+        if typed not in MOVIES_TO_SUGGEST and typed != '':
+            MOVIES_TO_SUGGEST.append(typed)
             var.set('Success')
             root.after(2000, remove_lbl)
         else:
@@ -107,29 +103,29 @@ def new_window1() -> None:
         """ Updates the threshold for the number of recommendations that are outputted """
         THRESHOLD[0] = int(entry_threshold.get()) + 1
 
-    root = Tk()
+    root = tk.Tk()
     root['background'] = '#121212'
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
-    root.geometry("{}x{}+{}+{}".format(window_width, window_height, screen_width // 2 - 200,
+    root.geometry("{}x{}+{}+{}".format(WINDOW_WIDTH, WINDOW_HEIGHT, screen_width // 2 - 200,
                                        screen_height // 2 - 400))
 
     new_font = Font(family='Montserrat', size=18)
 
-    new_label = Label(root,
-                      bg='#121212', fg='white',
-                      text="Add the Title of\nYour Favourite Movies", font=new_font)
+    new_label = tk.Label(root,
+                         bg='#121212', fg='white',
+                         text="Add the Title of\nYour Favourite Movies", font=new_font)
     new_label.place(x=65, y=116)
 
-    entry = Entry(root, width=17, font=new_font)
+    entry = tk.Entry(root, width=17, font=new_font)
     entry.place(x=61, y=204)
 
     list_font = Font(family='Segoe UI', size=8)
-    my_list = Listbox(root, font=list_font, width=45)
+    my_list = tk.Listbox(root, font=list_font, width=45)
     my_list.place(x=61, y=263)
 
     # Add movies to the list box
-    update(movie_titles)
+    update(MOVIE_TITLES)
 
     # Bind when clicking movie title, calls the fill function to add to entry()
     my_list.bind("<<ListboxSelect>>", fill)
@@ -138,27 +134,28 @@ def new_window1() -> None:
     entry.bind("<KeyRelease>", suggest)
 
     small_font = Font(family='Montserrat', size=12)
-    lbl_ask = Label(root, font=small_font, bg='#121212', fg='white', justify=LEFT, text='Number of\nrecommendations?')
+    lbl_ask = tk.Label(root, font=small_font, bg='#121212', fg='white', justify=tk.LEFT,
+                       text='Number of\nrecommendations?')
     lbl_ask.place(x=61, y=455)
 
-    entry_threshold = Entry(root, width=8, font=small_font)
+    entry_threshold = tk.Entry(root, width=8, font=small_font)
     entry_threshold.place(x=240, y=465)
 
     image1 = tk.PhotoImage(file='images/add.png')
-    btn_add = Button(root, image=image1, bg='#121212',
-                     borderwidth=0)
+    btn_add = tk.Button(root, image=image1, bg='#121212',
+                        borderwidth=0)
     btn_add.place(x=109, y=533)
     btn_add.bind("<Button-1>", add)
 
-    var = StringVar()
+    var = tk.StringVar()
     var.set('')
-    lbl = Label(root, font=small_font, textvariable=var, bg='#121212', fg='white')
+    lbl = tk.Label(root, font=small_font, textvariable=var, bg='#121212', fg='white')
     lbl.place(x=156, y=691)
 
     image2 = tk.PhotoImage(file='images/generate.png')
-    button2 = Button(root, image=image2, bg='#121212', activebackground='#121212',
-                     command=lambda: [update_threshold(), root.destroy(), page_three()],
-                     borderwidth=0)
+    button2 = tk.Button(root, image=image2, bg='#121212', activebackground='#121212',
+                        command=lambda: [update_threshold(), root.destroy(), page_three()],
+                        borderwidth=0)
     button2.pack()
     button2.place(x=109, y=612)
 
@@ -168,41 +165,41 @@ def new_window1() -> None:
 
 
 def page_three() -> None:
-    """ make page three"""
-    root = Tk()
+    """ make page three for showing our result to the user"""
+    root = tk.Tk()
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
     new_font = Font(family='Montserrat', size=16)
     root['background'] = '#121212'
-    root.geometry("{}x{}+{}+{}".format(window_width, window_height, screen_width // 2 - 200,
+    root.geometry("{}x{}+{}+{}".format(WINDOW_WIDTH, WINDOW_HEIGHT, screen_width // 2 - 200,
                                        screen_height // 2 - 400))
     # root.geometry("375x812")
     # frame = Frame(root, bd=5, bg="#5841A6")
     # frame.pack()
 
     # need to be change
-    graph.add_reviewer(movies_to_suggest)
-    recommend_movie = Graph.get_suggestions('CSC111_Reviewer', graph, THRESHOLD[0])
+    GRAPH.add_reviewer(MOVIES_TO_SUGGEST)
+    recommend_movie = graph_construction.get_suggestions('CSC111_Reviewer', GRAPH, THRESHOLD[0])
 
-    myscroll = Scrollbar(root)
-    myscroll.pack(side=RIGHT, fill=Y, )
+    my_scroll = tk.Scrollbar(root)
+    my_scroll.pack(side=tk.RIGHT, fill=tk.Y, )
 
     list_font = Font(family='Montserrat', size=12)
-    mylist = Listbox(root, font=list_font, fg='white', bg='#121212', width=window_height-50,
-                     height=window_width-50,
-                     yscrollcommand=myscroll.set)
+    my_list = tk.Listbox(root, font=list_font, fg='white', bg='#121212', width=WINDOW_HEIGHT - 50,
+                         height=WINDOW_WIDTH - 50,
+                         yscrollcommand=my_scroll.set)
     for i in range(1, len(recommend_movie)):
-        mylist.insert(END, "Movie " + str(recommend_movie[i]))
-    mylist.pack(side=LEFT, fill=BOTH, expand=True)
+        my_list.insert(tk.END, "Movie " + str(recommend_movie[i]))
+    my_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-    myscroll.config(command=mylist.yview)
+    my_scroll.config(command=my_list.yview)
 
     # top_frame = Frame(root, bd=5, bg="#5841A6")
     # top_frame.pack(side=TOP)
 
-    label = Label(root, bg='#121212', textvariable="movie you might like...", font=new_font,
-                  fg='white')
+    label = tk.Label(root, bg='#121212', textvariable="movie you might like...", font=new_font,
+                     fg='white')
     label.pack()
     label.place(x=89, y=159)
 
@@ -229,7 +226,7 @@ def page_three() -> None:
 if __name__ == '__main__':
     import python_ta
     python_ta.check_all(config={
-        'extra-imports': ['tkinter', 'tkinter.font', 'Graph'],
+        'extra-imports': ['tkinter', 'tkinter.font', 'graph_construction'],
         'allowed-io': [],
         'max-line-length': 100,
         'disable': ['E1136']
