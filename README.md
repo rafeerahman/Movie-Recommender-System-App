@@ -8,10 +8,10 @@
 
 ## **Example use-case using a list of horror movies**
 <p float="left">
-  <img src="report/latex_first_page.png" width="300" />
-  <img src="report/latex_second_page.png" width="300" />
-  <img src="report/latex_third_page.png" width="300" />
+  <img src="report/latex_first_page.png" width="200" />
+  <img src="report/latex_second_page.png" width="200" />
+  <img src="report/latex_third_page.png" width="200" />
 </p>
 
 ## **Visualization of a subset of our graph**
-<img src="report/latex_plotly.png" width="900" />
+<img src="report/latex_plotly.png" width="800" />
